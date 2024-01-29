@@ -1,0 +1,374 @@
+basePath: /api
+definitions:
+  request.CheckOtpRequest:
+    properties:
+      otp:
+        type: integer
+    required:
+    - otp
+    type: object
+  request.CreateTagsRequest:
+    properties:
+      name:
+        maxLength: 200
+        minLength: 1
+        type: string
+    required:
+    - name
+    type: object
+  request.CreateUsersRequest:
+    properties:
+      email:
+        type: string
+      password:
+        maxLength: 100
+        minLength: 8
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  request.ForgotPasswordRequest:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
+  request.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        maxLength: 100
+        minLength: 2
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  request.ResetPasswordRequest:
+    properties:
+      password:
+        type: string
+      password_confirmation:
+        type: string
+    required:
+    - password
+    - password_confirmation
+    type: object
+  request.UpdateTagsRequest:
+    properties:
+      id:
+        type: integer
+      name:
+        maxLength: 200
+        minLength: 1
+        type: string
+    required:
+    - id
+    - name
+    type: object
+  response.Meta:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+      total_data:
+        type: integer
+      total_page:
+        type: integer
+    type: object
+  response.Pagination:
+    properties:
+      code:
+        type: integer
+      data: {}
+      meta:
+        $ref: '#/definitions/response.Meta'
+      status:
+        type: string
+    type: object
+  response.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+host: localhost:8888
+info:
+  contact: {}
+  description: A Boilerplate API in Go using Gin framework
+  title: Boilerplate API
+  version: "1.0"
+paths:
+  /auth/check-otp:
+    post:
+      description: CheckOtp.
+      parameters:
+      - description: CheckOtp
+        in: body
+        name: check-otp
+        required: true
+        schema:
+          $ref: '#/definitions/request.CheckOtpRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: CheckOtp
+      tags:
+      - auth
+  /auth/forgot-password:
+    post:
+      description: ForgotPassword.
+      parameters:
+      - description: ForgotPassword
+        in: body
+        name: forgot-password
+        required: true
+        schema:
+          $ref: '#/definitions/request.ForgotPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: ForgotPassword
+      tags:
+      - auth
+  /auth/login:
+    post:
+      description: Login.
+      parameters:
+      - description: login
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/request.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Login
+      tags:
+      - auth
+  /auth/logout:
+    post:
+      description: Logout.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Logout
+      tags:
+      - auth
+  /auth/register:
+    post:
+      description: Register.
+      parameters:
+      - description: Register
+        in: body
+        name: register
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateUsersRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Register
+      tags:
+      - auth
+  /auth/reset-password:
+    patch:
+      description: ResetPassword.
+      parameters:
+      - description: ResetPassword
+        in: body
+        name: reset-password
+        required: true
+        schema:
+          $ref: '#/definitions/request.ResetPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: ResetPassword
+      tags:
+      - auth
+  /tags:
+    get:
+      description: Return list of tags.
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: string
+      - description: Page
+        in: query
+        name: page
+        type: string
+      - description: Name
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Pagination'
+      security:
+      - Bearer: []
+      summary: Get All tags.
+      tags:
+      - tags
+    post:
+      description: Save tags data in Db.
+      parameters:
+      - description: Create tags
+        in: body
+        name: tags
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateTagsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Create tags
+      tags:
+      - tags
+  /tags/{tagId}:
+    delete:
+      description: Remove tags data by id.
+      parameters:
+      - description: delete tags by id
+        in: path
+        name: tagId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Delete tags
+      tags:
+      - tags
+    get:
+      description: Return the tahs whoes tagId value mathes id.
+      parameters:
+      - description: update tags by id
+        in: path
+        name: tagId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Get Single tags by id.
+      tags:
+      - tags
+    patch:
+      description: Update tags data.
+      parameters:
+      - description: update tags by id
+        in: path
+        name: tagId
+        required: true
+        type: string
+      - description: Update tags
+        in: body
+        name: tags
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateTagsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Update tags
+      tags:
+      - tags
+  /users:
+    get:
+      description: Return list of users.
+      parameters:
+      - description: Email
+        in: query
+        name: email
+        type: string
+      - description: Username
+        in: query
+        name: username
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Get All users.
+      tags:
+      - users
+securityDefinitions:
+  Bearer:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
