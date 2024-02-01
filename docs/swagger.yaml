@@ -72,6 +72,26 @@ definitions:
     - id
     - name
     type: object
+  request.UpdateUsersRequest:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      password:
+        maxLength: 100
+        minLength: 8
+        type: string
+      username:
+        maxLength: 200
+        minLength: 2
+        type: string
+    required:
+    - email
+    - id
+    - password
+    - username
+    type: object
   response.Meta:
     properties:
       limit:
@@ -341,6 +361,33 @@ paths:
       summary: Update tags
       tags:
       - tags
+  /user/{userId}:
+    patch:
+      description: Update user data.
+      parameters:
+      - description: update user by id
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: Update user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateUsersRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Update user
+      tags:
+      - users
   /users:
     get:
       description: Return list of users.
@@ -363,6 +410,109 @@ paths:
       security:
       - Bearer: []
       summary: Get All users.
+      tags:
+      - users
+    post:
+      description: Save user data in Db.
+      parameters:
+      - description: Create user
+        in: body
+        name: users
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateUsersRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Create User
+      tags:
+      - users
+  /users/{userId}:
+    get:
+      description: Return the tahs whoes userId value mathes id.
+      parameters:
+      - description: update user by id
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Get Single user by id.
+      tags:
+      - users
+  /users/bulk/:
+    post:
+      description: Remove user data by providing an array of user IDs in the request
+        body.
+      parameters:
+      - description: Array of user IDs to delete
+        in: body
+        name: request
+        required: true
+        schema:
+          items:
+            type: integer
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Delete users by array of IDs
+      tags:
+      - users
+  /users/export:
+    get:
+      description: Return the export excel user.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Export Excel User.
+      tags:
+      - users
+  /users/import:
+    post:
+      description: Upload and import user data from an Excel file.
+      parameters:
+      - description: Excel file to import
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Import Excel User.
       tags:
       - users
 securityDefinitions:

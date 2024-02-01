@@ -2,7 +2,7 @@ package request
 
 type CreateUsersRequest struct {
 	Username string `validate:"required" json:"username"`
-	Email    string `validate:"required,email" json:"email"`
+	Email    string `validate:"required,email,unique=users" json:"email"`
 	Password string `validate:"required,min=8,max=100" json:"password"`
 }
 

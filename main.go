@@ -37,7 +37,9 @@ func main() {
 	//Database
 	db := config.ConnectionDB(&loadConfig)
 	validate := validator.New()
-
+	_ = validate.RegisterValidation("unique", func(fl validator.FieldLevel) bool {
+        return helper.ValidateUnique(db, fl)
+    })
 	if !db.Migrator().HasTable(&model.Users{}) {
 		db.Table("users").AutoMigrate(&model.Users{})
 	}
@@ -64,7 +66,7 @@ func main() {
 
 	//Init controller
 	authenticationController := controller.NewAuthenticationController(authenticationService, validate)
-	usersController := controller.NewUsersController(usersService)
+	usersController := controller.NewUsersController(usersService, validate)
 	tagsController := controller.NewTagsController(tagsService, validate)
 
 	routes := router.NewRouter(userRepository, authenticationController, usersController, tagsController)

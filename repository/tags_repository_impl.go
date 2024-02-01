@@ -74,21 +74,6 @@ func (t *TagsRepositoryImpl) FindAll(limit int, page int, filters map[string]int
     helper.ErrorPanic(result.Error)
 
     return tags
-	// var tags []model.Tags
-	// var totalRows int64
-
-    // query :=  t.Db.Model(&tags)
-
-    // for field, value := range filters {
-	// 	if value != "" {
-	// 		query = query.Where(fmt.Sprintf("%s = ?", field), value)
-	// 	}
-	// }
-
-	// result := t.Db.Scopes(response.Scopes(page, limit)).Find(&tags).Count(&totalRows)
-	// helper.ErrorPanic(result.Error)
-	// return tags
-	
 }
 
 func (t *TagsRepositoryImpl) Count() (int64, error) {

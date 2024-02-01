@@ -36,6 +36,12 @@ func NewRouter(userRepository repository.UsersRepository, authenticationControll
 
 	usersRouter := router.Group("/users")
 	usersRouter.GET("", middleware.JwtMiddleware(userRepository), usersController.GetUsers)
+	usersRouter.POST("", middleware.JwtMiddleware(userRepository), usersController.Create)
+	usersRouter.PATCH("/:userId", middleware.JwtMiddleware(userRepository), usersController.Update)
+	usersRouter.GET("/:userId", middleware.JwtMiddleware(userRepository), usersController.FindById)
+	usersRouter.POST("/bulk", middleware.JwtMiddleware(userRepository), usersController.BulkDelete)
+	usersRouter.GET("/export", middleware.JwtMiddleware(userRepository), usersController.Export)
+	usersRouter.POST("/import", middleware.JwtMiddleware(userRepository), usersController.Import)
 
 	tagsRouter := router.Group("/tags")
 	tagsRouter.GET("", middleware.JwtMiddleware(userRepository), tagsController.FindAll)

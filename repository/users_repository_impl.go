@@ -24,6 +24,12 @@ func (u *UsersRepositoryImpl) Delete(usersId int) {
 	helper.ErrorPanic(result.Error)
 }
 
+func (u *UsersRepositoryImpl) BulkDelete(userIds []int) {
+	var users model.Users
+	result := u.Db.Where("id IN (?)", userIds).Delete(&users)
+	helper.ErrorPanic(result.Error)
+}
+
 func (u *UsersRepositoryImpl) FindAll(filters map[string]string) []model.Users {
 	var users []model.Users
     query := u.Db.Model(&users)
