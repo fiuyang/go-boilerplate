@@ -1,11 +1,11 @@
 package main
 
 import (
-	_ "gin-boilerplate/docs"
 	"gin-boilerplate/config"
 	"gin-boilerplate/controller"
+	_ "gin-boilerplate/docs"
 	"gin-boilerplate/helper"
-	"gin-boilerplate/model"
+	"gin-boilerplate/migrations"
 	"gin-boilerplate/repository"
 	"gin-boilerplate/router"
 	"gin-boilerplate/service"
@@ -36,28 +36,19 @@ func main() {
 
 	//Database
 	db := config.ConnectionDB(&loadConfig)
+
+	//Validation
 	validate := validator.New()
 	_ = validate.RegisterValidation("unique", func(fl validator.FieldLevel) bool {
-        return helper.ValidateUnique(db, fl)
-    })
-	if !db.Migrator().HasTable(&model.Users{}) {
-		db.Table("users").AutoMigrate(&model.Users{})
-	}
+		return helper.ValidateUnique(db, fl)
+	})
 
-	if !db.Migrator().HasTable(&model.Tags{}) {
-		db.Table("tags").AutoMigrate(&model.Tags{})
-	}
-
-	if !db.Migrator().HasTable(&model.PasswordResets{}) {
-		db.Table("password_resets").AutoMigrate(&model.PasswordResets{})
-	}
-	
-	// db.Table("users").AutoMigrate(&model.Users{})
-	// db.Table("tags").AutoMigrate(&model.Tags{})
+	//Migrations
+	migrations.PerformMigrations(db)
 
 	//Init Repository
 	userRepository := repository.NewUsersRepositoryImpl(db)
-	tagsRepository := repository.NewTagsREpositoryImpl(db)
+	tagsRepository := repository.NewTagsRepositoryImpl(db)
 
 	//Init Service
 	authenticationService := service.NewAuthenticationServiceImpl(userRepository)
@@ -69,9 +60,13 @@ func main() {
 	usersController := controller.NewUsersController(usersService, validate)
 	tagsController := controller.NewTagsController(tagsService, validate)
 
-	routes := router.NewRouter(userRepository, authenticationController, usersController, tagsController)
-
-	
+	//Router
+	routes := router.NewRouter(
+		userRepository,
+		authenticationController,
+		usersController,
+		tagsController,
+	)
 
 	server := &http.Server{
 		Addr:           ":" + loadConfig.ServerPort,
@@ -81,6 +76,6 @@ func main() {
 		MaxHeaderBytes: 1 << 20,
 	}
 
-	server_err := server.ListenAndServe()
-	helper.ErrorPanic(server_err)
+	error := server.ListenAndServe()
+	helper.ErrorPanic(error)
 }

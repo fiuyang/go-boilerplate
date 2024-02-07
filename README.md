@@ -19,6 +19,11 @@ Before you running the program, make sure you've run this command:
 ```bash
 - go run main.go
 ```
+### Run program live reload
+```bash
+- air
+```
+
 ### Re-Init Docs Swagger
 ```bash
 - swag init

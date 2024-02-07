@@ -11,7 +11,12 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func NewRouter(userRepository repository.UsersRepository, authenticationController *controller.AuthenticationController, usersController *controller.UserController, tagsController *controller.TagsController) *gin.Engine {
+func NewRouter(
+	userRepository repository.UsersRepository, 
+	authenticationController *controller.AuthenticationController, 
+	usersController *controller.UserController, 
+	tagsController *controller.TagsController,
+	 ) *gin.Engine {
 	service := gin.Default()
 
 	//add swagger docs

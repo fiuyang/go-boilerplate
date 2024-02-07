@@ -15,7 +15,7 @@ type TagsRepositoryImpl struct {
 	Db *gorm.DB
 }
 
-func NewTagsREpositoryImpl(Db *gorm.DB) TagsRepository {
+func NewTagsRepositoryImpl(Db *gorm.DB) TagsRepository {
 	return &TagsRepositoryImpl{Db: Db}
 }
 
