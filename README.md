@@ -10,28 +10,28 @@ This Boilerplate Project with Go, Gin-Gonic, Gorm, JWT, Postgresql, Docker
 # Getting Start:
 Before you running the program, make sure you've run this command:
 ```bash
-- go get -u all
-- app.env with config db
-- docker compose up -d
+ go get -u all
+ app.env with config db
+ docker compose up -d
 ```
 
 ### Run the program
 ```bash
-- go run main.go
+ go run main.go
 ```
 ### Run program live reload
 ```bash
-- air
+ air
 ```
 
 ### Re-Init Docs Swagger
 ```bash
-- swag init
+ swag init
 ```
 
 ### Check Docs Swagger
 ```bash
-- http://localhost:8888/docs/index.html#/
+ http://localhost:8888/docs/index.html#/
 ```
 
 The program will run on http://localhost:8888 

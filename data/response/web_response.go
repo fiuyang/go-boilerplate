@@ -8,8 +8,15 @@ type Response struct {
 }
 
 type Error struct {
-	Code      int         `json:"code"`
-	Status    string      `json:"status"`
-	Message   string      `json:"message"`
-	Errors    interface{} `json:"data,omitempty"`
+	Code   int    `json:"code"`
+	Status string `json:"status"`
+	// Message   string      `json:"message"`
+	Errors interface{} `json:"errors,omitempty"`
 }
+
+// func FailedResponse(message string) map[string]interface{} {
+// 	return map[string]interface{}{
+// 		"success": false,
+// 		"message": message,
+// 	}
+// }

@@ -2,14 +2,14 @@ package request
 
 type CreateUsersRequest struct {
 	Username string `validate:"required" json:"username"`
-	Email    string `validate:"required,email,unique=users" json:"email"`
+	Email    string `validate:"required,email,unique=users;email" json:"email"`
 	Password string `validate:"required,min=8,max=100" json:"password"`
 }
 
 type UpdateUsersRequest struct {
 	Id       int    `validate:"required"`
 	Username string `validate:"required,max=200,min=2" json:"username"`
-	Email    string `validate:"required,email" json:"email"`
+	Email    string `validate:"required,email,unique=users;email;id" json:"email"`
 	Password string `validate:"required,min=8,max=100" json:"password"`
 }
 
@@ -19,11 +19,11 @@ type LoginRequest struct {
 }
 
 type ForgotPasswordRequest struct {
-	Email              string `validate:"required,email" json:"email"`
+	Email string `validate:"required,email" json:"email"`
 }
 
 type CheckOtpRequest struct {
-	Otp              int `validate:"required" json:"otp"`
+	Otp int `validate:"required" json:"otp"`
 }
 
 type ResetPasswordRequest struct {

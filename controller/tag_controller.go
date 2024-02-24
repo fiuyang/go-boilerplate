@@ -9,19 +9,16 @@ import (
 	"strconv"
 	
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
 	"github.com/rs/zerolog/log"
 )
 
-type TagsController struct {
-	tagsService service.TagsService
-	Validate       *validator.Validate
+type TagController struct {
+	tagService service.TagService
 }
 
-func NewTagsController(service service.TagsService, validate *validator.Validate) *TagsController {
-	return &TagsController{
-		tagsService: service,
-		Validate:       validate,
+func NewTagController(service service.TagService) *TagController {
+	return &TagController{
+		tagService: service,
 	}
 }
 
@@ -34,21 +31,13 @@ func NewTagsController(service service.TagsService, validate *validator.Validate
 // @Success			200 {object} response.Response{}
 // @Router			/tags [post]
 // @Security        Bearer
-func (controller *TagsController) Create(ctx *gin.Context) {
+func (controller *TagController) Create(ctx *gin.Context) {
 	log.Info().Msg("create tags")
 	createTagsRequest := request.CreateTagsRequest{}
 	err := ctx.ShouldBindJSON(&createTagsRequest)
 	helper.ErrorPanic(err)
 	
-	if err := controller.Validate.Struct(createTagsRequest); err != nil {
-		if helper.ValidationError(err, ctx, createTagsRequest) {
-			return
-		}
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
-		return
-	}
-	
-	controller.tagsService.Create(createTagsRequest)
+	controller.tagService.Create(createTagsRequest)
 	webResponse := response.Response{
 		Code:   http.StatusOK,
 		Status: "Ok",
@@ -69,7 +58,7 @@ func (controller *TagsController) Create(ctx *gin.Context) {
 // @Success			200 {object} response.Response{}
 // @Router			/tags/{tagId} [patch]
 // @Security        Bearer
-func (controller *TagsController) Update(ctx *gin.Context) {
+func (controller *TagController) Update(ctx *gin.Context) {
 	log.Info().Msg("update tags")
 	updateTagsRequest := request.UpdateTagsRequest{}
 	err := ctx.ShouldBindJSON(&updateTagsRequest)
@@ -80,7 +69,7 @@ func (controller *TagsController) Update(ctx *gin.Context) {
 	helper.ErrorPanic(err)
 	updateTagsRequest.Id = id
 	
-	controller.tagsService.Update(updateTagsRequest)
+	controller.tagService.Update(updateTagsRequest)
 	
 	webResponse := response.Response{
 		Code:   http.StatusOK,
@@ -100,12 +89,13 @@ func (controller *TagsController) Update(ctx *gin.Context) {
 // @Success			200 {object} response.Response{}
 // @Router			/tags/{tagId} [delete]
 // @Security        Bearer
-func (controller *TagsController) Delete(ctx *gin.Context) {
+func (controller *TagController) Delete(ctx *gin.Context) {
 	log.Info().Msg("delete tags")
 	tagId := ctx.Param("tagId")
 	id, err := strconv.Atoi(tagId)
 	helper.ErrorPanic(err)
-	controller.tagsService.Delete(id)
+
+	controller.tagService.Delete(id)
 	
 	webResponse := response.Response{
 		Code:   http.StatusOK,
@@ -125,13 +115,13 @@ func (controller *TagsController) Delete(ctx *gin.Context) {
 // @Success				200 {object} response.Response{}
 // @Router				/tags/{tagId} [get]
 // @Security            Bearer
-func (controller *TagsController) FindById(ctx *gin.Context) {
+func (controller *TagController) FindById(ctx *gin.Context) {
 	log.Info().Msg("findbyid tags")
 	tagId := ctx.Param("tagId")
 	id, err := strconv.Atoi(tagId)
 	helper.ErrorPanic(err)
 	
-	tagResponse := controller.tagsService.FindById(id)
+	tagResponse := controller.tagService.FindById(id)
 	
 	webResponse := response.Response{
 		Code:   http.StatusOK,
@@ -153,7 +143,7 @@ func (controller *TagsController) FindById(ctx *gin.Context) {
 // @Success         200 {object} response.Pagination{}
 // @Router			/tags [get]
 // @Security        Bearer
-func (controller *TagsController) FindAll(ctx *gin.Context) {
+func (controller *TagController) FindAll(ctx *gin.Context) {
 	log.Info().Msg("findAll tags")
 	limit, _ := strconv.Atoi(ctx.Query("limit"))
 
@@ -169,7 +159,7 @@ func (controller *TagsController) FindAll(ctx *gin.Context) {
 	if page < 1 {
 		page = 1
 	}
-	tagResponse, err := controller.tagsService.FindAll(limit, page, filters)
+	tagResponse, err := controller.tagService.FindAll(limit, page, filters)
 	helper.ErrorPanic(err)
 	
 	webResponse := response.Pagination{

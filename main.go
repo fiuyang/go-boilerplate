@@ -20,7 +20,7 @@ import (
 // @version	1.0
 // @description A Boilerplate API in Go using Gin framework
 
-// @host 	localhost:8888
+// @host 	localhost:8000
 // @BasePath /api
 
 // @securityDefinitions.apikey Bearer
@@ -44,28 +44,28 @@ func main() {
 	})
 
 	//Migrations
-	migrations.PerformMigrations(db)
+	migrations.AutoMigrate(db)
 
 	//Init Repository
-	userRepository := repository.NewUsersRepositoryImpl(db)
-	tagsRepository := repository.NewTagsRepositoryImpl(db)
+	userRepository := repository.NewUserRepositoryImpl(db)
+	tagRepository := repository.NewTagRepositoryImpl(db)
 
 	//Init Service
-	authenticationService := service.NewAuthenticationServiceImpl(userRepository)
-	tagsService := service.NewTagsServiceImpl(tagsRepository)
-	usersService := service.NewUsersServiceImpl(userRepository)
+	authService := service.NewAuthServiceImpl(userRepository, validate)
+	tagService := service.NewTagServiceImpl(tagRepository, validate)
+	userService := service.NewUserServiceImpl(userRepository, validate)
 
 	//Init controller
-	authenticationController := controller.NewAuthenticationController(authenticationService, validate)
-	usersController := controller.NewUsersController(usersService, validate)
-	tagsController := controller.NewTagsController(tagsService, validate)
+	authController := controller.NewAuthController(authService)
+	userController := controller.NewUserController(userService)
+	tagController := controller.NewTagController(tagService)
 
 	//Router
 	routes := router.NewRouter(
 		userRepository,
-		authenticationController,
-		usersController,
-		tagsController,
+		authController,
+		userController,
+		tagController,
 	)
 
 	server := &http.Server{

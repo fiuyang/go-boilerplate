@@ -123,7 +123,7 @@ definitions:
       status:
         type: string
     type: object
-host: localhost:8888
+host: localhost:8000
 info:
   contact: {}
   description: A Boilerplate API in Go using Gin framework
@@ -205,6 +205,21 @@ paths:
       summary: Logout
       tags:
       - auth
+  /auth/refresh-token:
+    get:
+      description: RefreshToken.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: RefreshToken
+      tags:
+      - auth
   /auth/register:
     post:
       description: Register.
@@ -218,8 +233,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/response.Response'
       summary: Register
@@ -361,33 +376,6 @@ paths:
       summary: Update tags
       tags:
       - tags
-  /user/{userId}:
-    patch:
-      description: Update user data.
-      parameters:
-      - description: update user by id
-        in: path
-        name: userId
-        required: true
-        type: string
-      - description: Update user
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/request.UpdateUsersRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - Bearer: []
-      summary: Update user
-      tags:
-      - users
   /users:
     get:
       description: Return list of users.
@@ -452,6 +440,32 @@ paths:
       security:
       - Bearer: []
       summary: Get Single user by id.
+      tags:
+      - users
+    patch:
+      description: Update user data.
+      parameters:
+      - description: update user by id
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: Update user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateUsersRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Update user
       tags:
       - users
   /users/bulk/:
